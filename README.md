@@ -5,6 +5,8 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![stdlib-only core](https://img.shields.io/badge/core-stdlib%20only-brightgreen.svg)](scripts/check_core_deps.py)
 
+> **If this is useful, a star or fork helps others find it.** It is a small, unaided project; stars/fork counts are the honest signal that keeps it maintained. No accounts, no telemetry, no paid promotion.
+
 **Catch catastrophic-backtracking (ReDoS) regexes before code-generating models get them deployed.**
 Models happily produce `(a+)+$`, `(a|aa)+$` and `^(\w+)\1+$`; on adversarial input a
 backtracking regex engine can hang a service for seconds, minutes or effectively
@@ -239,6 +241,19 @@ evidence/              # raw captured evidence (timings, static cases, CLI runs,
 86 个单元测试全部通过。**诚实声明**：静态分析是启发式、动态测量只覆盖采样输入，均不是
 最坏情况复杂度的证明；本工具不声称发现新漏洞或新 CVE。详见
 [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md)。
+
+## Related projects (same author, independent, stdlib-first)
+
+Other tools by the same author covering adjacent LLM failure surfaces. Each is independent: use or fork only the one you need; every README states its own limits.
+
+- [yixin-go](https://github.com/Qin-Z-x/yixin-go) - local-first Windows Go (weiqi/baduk) sparring partner built on KataGo + Human SL.
+- [llm-failbench](https://github.com/Qin-Z-x/llm-failbench) - 100 deterministic, judge-free failure probes for LLMs, with a cited evidence atlas and a CI regression gate.
+- [llm-json-doctor](https://github.com/Qin-Z-x/llm-json-doctor) - deterministic repair + JSON Schema validation for malformed LLM JSON; no LLM calls, stdlib only.
+- [llm-invisible-guard](https://github.com/Qin-Z-x/llm-invisible-guard) - detect and sanitize invisible-Unicode prompt injection (zero-width, bidi, Unicode-Tag smuggling).
+- [llm-exfil-guard](https://github.com/Qin-Z-x/llm-exfil-guard) - detect data exfiltration through rendered LLM output: image beacons, hidden content, remote loads.
+- [slopsquat-guard](https://github.com/Qin-Z-x/slopsquat-guard) - flag hallucinated / typosquatted PyPI and npm dependency names before you install them.
+
+If one of these fits your pipeline, a star/fork on that repo is the only help this project asks for.
 
 ## License and acknowledgements
 
