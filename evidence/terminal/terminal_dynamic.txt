@@ -1,0 +1,17 @@
+Windows PowerShell - redos-guard evidence session (real captured output)
+
+$ python -m redos_guard check (a+)+$ --timeout 1 --input aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!
+redos-guard 0.1.0  check  '(a+)+$'
+HIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (…)+ repeats a group that already repeats 'a'+ — backtracking can be exponential
+    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.
+HIGH   RG-DYNAMIC-TIMEOUT   @0-0  dynamic probe exceeded 1.00s on 'user-provided input' (41 chars): measured wall time ≥1.02s
+    suggestion: Constrain the repetition (bounded {m,n}), remove nested quantifiers, or use an atomic/possessive construct; consider an input length cap before matching.
+DYNAMIC TIMEOUT  exceeded 1.00s on 'user-provided input' (41 chars); total wall time 1.02s
+summary: 2 finding(s): 2 high, 0 medium, 0 low | dynamic probes: 1
+[exit code: 0]
+
+$ python -m redos_guard check a+$ --timeout 1 --input aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!
+redos-guard 0.1.0  check  'a+$'
+DYNAMIC          0.0000s on 'user-provided input' (41 chars), matched=False
+summary: 0 finding(s): 0 high, 0 medium, 0 low | dynamic probes: 1
+[exit code: 0]

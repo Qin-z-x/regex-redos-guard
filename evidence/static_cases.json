@@ -1,0 +1,131 @@
+[
+  {
+    "pattern": "(a+)+$",
+    "label": "catastrophic: nested quantifiers",
+    "findings": [
+      {
+        "code": "RG-NESTED-QUANT",
+        "severity": "high",
+        "start": 4,
+        "end": 5,
+        "message": "nested quantifiers: (\u2026)+ repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential",
+        "suggestion": "Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.",
+        "data": {
+          "outer": "(\u2026)+",
+          "inner": "'a'+",
+          "outer_unbounded": true
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "(a|aa)+$",
+    "label": "catastrophic: overlapping alternation",
+    "findings": [
+      {
+        "code": "RG-OVERLAP-ALT",
+        "severity": "high",
+        "start": 6,
+        "end": 7,
+        "message": "overlapping alternation branches \"'a'\" and \"'a''a'\" inside a repeated group (first characters overlap): ambiguous matching can backtrack exponentially",
+        "suggestion": "Make the branches unambiguous (e.g. `(a|aa)` -> `a+` if equivalent, or order branches longest-first and use an atomic/possessive group), or replace the alternation with a character class if the branches are single characters.",
+        "data": {
+          "branches": [
+            "'a'",
+            "'a''a'"
+          ],
+          "reason": "first characters overlap",
+          "outer_unbounded": true
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "^(\\w+)\\1+$",
+    "label": "catastrophic: repeated backreference",
+    "findings": [
+      {
+        "code": "RG-BACKREF-REPEAT",
+        "severity": "high",
+        "start": 8,
+        "end": 9,
+        "message": "backreference \\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences",
+        "suggestion": "Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.",
+        "data": {
+          "backref_group": 1
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "(\\w+\\s?)+",
+    "label": "catastrophic: nested words",
+    "findings": [
+      {
+        "code": "RG-NESTED-QUANT",
+        "severity": "high",
+        "start": 8,
+        "end": 9,
+        "message": "nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential",
+        "suggestion": "Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.",
+        "data": {
+          "outer": "(\u2026)+",
+          "inner": "[0123456789AB]+",
+          "outer_unbounded": true
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "(a+){3}",
+    "label": "bounded nested quantifier",
+    "findings": [
+      {
+        "code": "RG-NESTED-QUANT",
+        "severity": "medium",
+        "start": 4,
+        "end": 7,
+        "message": "nested quantifiers: (\u2026){3} repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential",
+        "suggestion": "Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.",
+        "data": {
+          "outer": "(\u2026){3}",
+          "inner": "'a'+",
+          "outer_unbounded": false
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "\\w+\\w+",
+    "label": "quadratic: adjacent overlapping repeats",
+    "findings": [
+      {
+        "code": "RG-ADJACENT-REPEAT",
+        "severity": "medium",
+        "start": 2,
+        "end": 6,
+        "message": "adjacent unbounded repeats with overlapping character sets ([0123456789AB]+, [0123456789AB]+) can cause quadratic backtracking on long inputs",
+        "suggestion": "Merge the repetitions into one quantifier where possible (e.g. `\\w+\\w+` -> `\\w+`), or insert a mandatory separator between them.",
+        "data": {
+          "left": "[0123456789AB]+",
+          "right": "[0123456789AB]+"
+        }
+      }
+    ]
+  },
+  {
+    "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+    "label": "safe: date",
+    "findings": []
+  },
+  {
+    "pattern": "(?:ab)+$",
+    "label": "safe: delimited group repeat",
+    "findings": []
+  },
+  {
+    "pattern": "(?:-[a-z0-9]+)*",
+    "label": "safe: separator-delimited group repeat",
+    "findings": []
+  }
+]

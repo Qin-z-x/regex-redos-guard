@@ -1,0 +1,33 @@
+Windows PowerShell - redos-guard evidence session (real captured output)
+
+$ python -m redos_guard scan-file examples/llm_generated_patterns.py
+redos-guard 0.1.0  scan-file  examples/llm_generated_patterns.py  (1 files, 9 constant patterns)
+note: llm_generated_patterns.py: non-constant pattern argument cannot be analysed statically
+SAFE   llm_generated_patterns.py:10  '^[\\w.+-]+@[\\w-]+\\.[\\w.]+$'
+SAFE   llm_generated_patterns.py:11  '^\\d{4}-\\d{2}-\\d{2}$'
+SAFE   llm_generated_patterns.py:12  '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+RISK   llm_generated_patterns.py:15  '^(\\w+)+$'
+    HIGH   RG-NESTED-QUANT      @6-7  nested quantifiers: (…)+ repeats a group that already repeats [0123456789AB]+ — backtracking can be exponential
+        suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.
+RISK   llm_generated_patterns.py:18  '^(a|aa)+$'
+    HIGH   RG-OVERLAP-ALT       @7-8  overlapping alternation branches "'a'" and "'a''a'" inside a repeated group (first characters overlap): ambiguous matching can backtrack exponentially
+        suggestion: Make the branches unambiguous (e.g. `(a|aa)` -> `a+` if equivalent, or order branches longest-first and use an atomic/possessive group), or replace the alternation with a character class if the branches are single characters.
+RISK   llm_generated_patterns.py:21  '^(\\w+)\\1+$'
+    HIGH   RG-BACKREF-REPEAT    @8-9  backreference \1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences
+        suggestion: Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.
+SAFE   llm_generated_patterns.py:25  '^\\d{4}-\\d{2}-\\d{2}$'
+RISK   llm_generated_patterns.py:29  '^(\\w+)+$'
+    HIGH   RG-NESTED-QUANT      @6-7  nested quantifiers: (…)+ repeats a group that already repeats [0123456789AB]+ — backtracking can be exponential
+        suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.
+RISK   llm_generated_patterns.py:33  '^(\\w+)\\1+$'
+    HIGH   RG-BACKREF-REPEAT    @8-9  backreference \1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences
+        suggestion: Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.
+summary: 9 pattern(s) analysed, 5 finding(s): 5 high, 0 medium, 0 low
+[exit code: 0]
+
+$ python -c <scan-file verification one-liner>
+patterns analysed: 9
+findings: 5 high: 5
+dynamic skipped (non-constant): 1
+risky patterns: ['llm_generated_patterns.py:15 ^(\\w+)+$', 'llm_generated_patterns.py:18 ^(a|aa)+$', 'llm_generated_patterns.py:21 ^(\\w+)\\1+$', 'llm_generated_patterns.py:29 ^(\\w+)+$', 'llm_generated_patterns.py:33 ^(\\w+)\\1+$']
+[exit code: 0]

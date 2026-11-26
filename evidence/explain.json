@@ -1,0 +1,36 @@
+{
+  "tool": "redos-guard",
+  "version": "0.1.0",
+  "pattern": "(a+)+$",
+  "valid": true,
+  "findings": [
+    {
+      "code": "RG-NESTED-QUANT",
+      "severity": "high",
+      "start": 4,
+      "end": 5,
+      "message": "nested quantifiers: (\u2026)+ repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential",
+      "suggestion": "Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.",
+      "data": {
+        "outer": "(\u2026)+",
+        "inner": "'a'+",
+        "outer_unbounded": true
+      }
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "high": 1,
+    "medium": 0,
+    "low": 0
+  },
+  "safe_static": false,
+  "suggestions": [
+    {
+      "code": "RG-NESTED-QUANT",
+      "severity": "high",
+      "suggestion": "Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it."
+    }
+  ],
+  "caveat": "Static heuristics: a clean result is not a proof of linear-time behaviour on every input."
+}

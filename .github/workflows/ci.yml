@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Core must be standard-library only
+        run: python scripts/check_core_deps.py
+
+      - name: Unit tests (unittest)
+        run: python -m unittest discover -s tests -t .
+
+      - name: Install pytest (dev-only)
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Unit tests via pytest
+        run: python -m pytest
+
+      - name: Static analysis is deterministic
+        run: |
+          python -m redos_guard check '(a+)+$' --json > check.json
+          python -c "
+          import json
+          first = json.load(open('check.json', encoding='utf-8'))
+          assert first['summary']['high'] == 1, first['summary']
+          assert first['findings'][0]['code'] == 'RG-NESTED-QUANT'
+          assert first['findings'][0]['suggestion']
+          print('static check OK:', first['summary'])
+          "
+
+      - name: CI gate catches a catastrophic regex (expected exit code 1)
+        run: |
+          set +e
+          python -m redos_guard check '(a+)+$' --fail-on high
+          code=$?
+          set -e
+          echo "check exit code: $code"
+          test "$code" -eq 1
+
+      - name: CI gate passes a safe pattern (expected exit code 0)
+        run: python -m redos_guard check '^\d{4}-\d{2}-\d{2}$' --fail-on high
+
+      - name: Real dynamic timeout in a child process (expected exit code 1)
+        run: |
+          set +e
+          python -m redos_guard check '(a+)+$' --timeout 1 --input "$(python -c 'print("a"*40+"!")')" --fail-on high
+          code=$?
+          set -e
+          echo "dynamic check exit code: $code"
+          test "$code" -eq 1
+
+      - name: Safe rewrite completes fast on the same input (expected exit code 0)
+        run: python -m redos_guard check 'a+$' --timeout 2 --input "$(python -c 'print("a"*40+"!")')" --fail-on medium
+
+      - name: scan-file flags risky patterns (expected exit code 1)
+        run: |
+          set +e
+          python -m redos_guard scan-file examples/llm_generated_patterns.py --fail-on high
+          code=$?
+          set -e
+          echo "scan-file exit code: $code"
+          test "$code" -eq 1
+
+      - name: scan-file on a safe file passes (expected exit code 0)
+        run: |
+          printf 'import re\nP = re.compile(r"^[a-z]+$")\n' > safe_scan_target.py
+          python -m redos_guard scan-file safe_scan_target.py --fail-on high
+
+      - name: JSON Schemas validate emitted results
+        run: python -m unittest tests.test_schema -v

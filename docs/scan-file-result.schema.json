@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Qin-Z-x/regex-redos-guard/docs/scan-file-result.schema.json",
+  "title": "redos-guard scan-file result",
+  "description": "Shape of `redos-guard scan-file --json` output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool", "version", "path", "entries", "findings", "errors", "summary", "dynamic_enabled", "caveat"],
+  "properties": {
+    "tool": { "type": "string", "const": "redos-guard" },
+    "version": { "type": "string" },
+    "path": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_file", "pattern", "line", "column"],
+        "additionalProperties": true,
+        "properties": {
+          "source_file": { "type": "string" },
+          "pattern": { "type": ["string", "null"] },
+          "line": { "type": "integer", "minimum": 0 },
+          "column": { "type": "integer", "minimum": 0 },
+          "call": { "type": "string" },
+          "findings": { "type": "array" },
+          "dynamic": { "type": "array" },
+          "error": { "type": ["string", "null"] },
+          "dynamic_skipped": { "type": "integer" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "message", "pattern", "source_file", "line"],
+        "additionalProperties": true,
+        "properties": {
+          "code": { "type": "string", "pattern": "^RG-[A-Z-]+$" },
+          "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+          "message": { "type": "string" },
+          "pattern": { "type": "string" },
+          "source_file": { "type": "string" },
+          "line": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "error"],
+        "additionalProperties": false,
+        "properties": {
+          "file": { "type": "string" },
+          "error": { "type": "string" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["total", "high", "medium", "low", "files", "patterns"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "medium": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 },
+        "files": { "type": "integer", "minimum": 0 },
+        "patterns": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "dynamic_enabled": { "type": "boolean" },
+    "caveat": { "type": "string" }
+  }
+}

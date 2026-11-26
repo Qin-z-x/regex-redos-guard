@@ -1,0 +1,22 @@
+Windows PowerShell - redos-guard evidence session (real captured output)
+
+$ python -m redos_guard check (a+)+$
+redos-guard 0.1.0  check  '(a+)+$'
+HIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (…)+ repeats a group that already repeats 'a'+ — backtracking can be exponential
+    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.
+summary: 1 finding(s): 1 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)
+[exit code: 0]
+
+$ python -m redos_guard check (a+)+$ --fail-on high
+redos-guard 0.1.0  check  '(a+)+$'
+HIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (…)+ repeats a group that already repeats 'a'+ — backtracking can be exponential
+    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.
+summary: 1 finding(s): 1 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)
+FAIL: 1 finding(s) at or above severity 'high' (--fail-on high)
+[exit code: 1]
+
+$ python -m redos_guard check ^\d{4}-\d{2}-\d{2}$ --fail-on high
+redos-guard 0.1.0  check  '^\\d{4}-\\d{2}-\\d{2}$'
+summary: 0 finding(s): 0 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)
+OK: no finding at or above severity 'high'
+[exit code: 0]

@@ -1,0 +1,48 @@
+[
+  {
+    "status": "timeout",
+    "wall_s": 2.0267808999633417,
+    "timeout_s": 2.0,
+    "input_length": 41,
+    "input_preview": "aaaaaaaaaaaaaaaaaaaaaaaa\u2026(41 chars)",
+    "matched": null,
+    "case": "catastrophic nested quantifier",
+    "pattern": "(a+)+$",
+    "input_label": "repeat + non-matching terminator"
+  },
+  {
+    "status": "timeout",
+    "wall_s": 2.0214081999729387,
+    "timeout_s": 2.0,
+    "input_length": 41,
+    "input_preview": "aaaaaaaaaaaaaaaaaaaaaaaa\u2026(41 chars)",
+    "matched": null,
+    "case": "catastrophic overlapping alternation",
+    "pattern": "(a|aa)+$",
+    "input_label": "repeat + non-matching terminator"
+  },
+  {
+    "wall_s": 0.06790389999514446,
+    "timeout_s": 2.0,
+    "input_length": 41,
+    "input_preview": "aaaaaaaaaaaaaaaaaaaaaaaa\u2026(41 chars)",
+    "status": "completed",
+    "elapsed_s": 7.599999662488699e-06,
+    "matched": false,
+    "case": "safe rewrite of the nested pattern",
+    "pattern": "a+$",
+    "input_label": "repeat + non-matching terminator"
+  },
+  {
+    "wall_s": 0.06054140004562214,
+    "timeout_s": 2.0,
+    "input_length": 41,
+    "input_preview": "aaaaaaaaaaaaaaaaaaaaaaaa\u2026(41 chars)",
+    "status": "completed",
+    "elapsed_s": 4.699977580457926e-06,
+    "matched": true,
+    "case": "safe delimited group repeat",
+    "pattern": "(?:-[a-z0-9]+)*$",
+    "input_label": "repeat + non-matching terminator"
+  }
+]

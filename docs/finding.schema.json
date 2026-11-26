@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Qin-Z-x/regex-redos-guard/docs/finding.schema.json",
+  "title": "redos-guard finding",
+  "description": "One static or dynamic ReDoS finding.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["code", "severity", "start", "end", "message", "suggestion", "data"],
+  "properties": {
+    "code": { "type": "string", "pattern": "^RG-[A-Z-]+$" },
+    "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+    "start": { "type": "integer", "minimum": 0 },
+    "end": { "type": "integer", "minimum": 0 },
+    "message": { "type": "string", "minLength": 1 },
+    "suggestion": { "type": "string" },
+    "data": { "type": "object" }
+  }
+}

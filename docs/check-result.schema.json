@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Qin-Z-x/regex-redos-guard/docs/check-result.schema.json",
+  "title": "redos-guard check result",
+  "description": "Shape of `redos-guard check --json` output.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tool", "version", "pattern", "findings", "summary", "static_summary", "dynamic", "dynamic_enabled", "caveat"],
+  "properties": {
+    "tool": { "type": "string", "const": "redos-guard" },
+    "version": { "type": "string" },
+    "pattern": { "type": "string", "minLength": 1 },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "severity", "start", "end", "message"],
+        "additionalProperties": true,
+        "properties": {
+          "code": { "type": "string", "pattern": "^RG-[A-Z-]+$" },
+          "severity": { "type": "string", "enum": ["low", "medium", "high"] },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 },
+          "message": { "type": "string", "minLength": 1 },
+          "suggestion": { "type": "string" },
+          "data": { "type": "object" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "high", "medium", "low"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "high": { "type": "integer", "minimum": 0 },
+        "medium": { "type": "integer", "minimum": 0 },
+        "low": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "static_summary": { "type": "object" },
+    "dynamic": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["status"],
+        "additionalProperties": true,
+        "properties": {
+          "status": { "type": "string", "enum": ["timeout", "completed", "invalid", "error"] },
+          "wall_s": { "type": "number" },
+          "timeout_s": { "type": "number" },
+          "input_length": { "type": "integer" }
+        }
+      }
+    },
+    "dynamic_enabled": { "type": "boolean" },
+    "caveat": { "type": "string" }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "python": "C:\\Users\\28643\\AppData\\Local\\Programs\\Python\\Python313-32\\python.exe",
+  "runs": [
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "check",
+        "(a+)+$"
+      ],
+      "exit_code": 0,
+      "stdout": "redos-guard 0.1.0  check  '(a+)+$'\r\nHIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (\u2026)+ repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential\r\n    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\r\nsummary: 1 finding(s): 1 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)\r\n",
+      "stderr": "",
+      "stdout_sha256": "7d20d3cf22fffaba889a6b9ca18b258a4f0328e02bac9e147e2712fc9a3dd9cb"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "check",
+        "(a+)+$",
+        "--fail-on",
+        "high"
+      ],
+      "exit_code": 1,
+      "stdout": "redos-guard 0.1.0  check  '(a+)+$'\r\nHIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (\u2026)+ repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential\r\n    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\r\nsummary: 1 finding(s): 1 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)\r\nFAIL: 1 finding(s) at or above severity 'high' (--fail-on high)\r\n",
+      "stderr": "",
+      "stdout_sha256": "5be0bc3e5ef9f3997bc61e497be1ff125f7bd2ce03d7822a973e141537a1ee99"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "check",
+        "^\\d{4}-\\d{2}-\\d{2}$",
+        "--fail-on",
+        "high"
+      ],
+      "exit_code": 0,
+      "stdout": "redos-guard 0.1.0  check  '^\\\\d{4}-\\\\d{2}-\\\\d{2}$'\r\nsummary: 0 finding(s): 0 high, 0 medium, 0 low (static only; pass --timeout N for dynamic probes)\r\nOK: no finding at or above severity 'high'\r\n",
+      "stderr": "",
+      "stdout_sha256": "ee8eca80c4ccfcd5cd125012e60da652df9e85e71e65bb9957020bfb183ec70b"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "check",
+        "(a+)+$",
+        "--timeout",
+        "1",
+        "--input",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+      ],
+      "exit_code": 0,
+      "stdout": "redos-guard 0.1.0  check  '(a+)+$'\r\nHIGH   RG-NESTED-QUANT      @4-5  nested quantifiers: (\u2026)+ repeats a group that already repeats 'a'+ \u2014 backtracking can be exponential\r\n    suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\r\nHIGH   RG-DYNAMIC-TIMEOUT   @0-0  dynamic probe exceeded 1.00s on 'user-provided input' (41 chars): measured wall time \u22651.02s\r\n    suggestion: Constrain the repetition (bounded {m,n}), remove nested quantifiers, or use an atomic/possessive construct; consider an input length cap before matching.\r\nDYNAMIC TIMEOUT  exceeded 1.00s on 'user-provided input' (41 chars); total wall time 1.02s\r\nsummary: 2 finding(s): 2 high, 0 medium, 0 low | dynamic probes: 1\r\n",
+      "stderr": "",
+      "stdout_sha256": "d9ae80b4cc40a01fc616b90297885b0779462b8b2bd582b5fdbe56bc2824d0d5"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "check",
+        "a+$",
+        "--timeout",
+        "1",
+        "--input",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!"
+      ],
+      "exit_code": 0,
+      "stdout": "redos-guard 0.1.0  check  'a+$'\r\nDYNAMIC          0.0000s on 'user-provided input' (41 chars), matched=False\r\nsummary: 0 finding(s): 0 high, 0 medium, 0 low | dynamic probes: 1\r\n",
+      "stderr": "",
+      "stdout_sha256": "5d03779fdd282f03d0474b39afaebe10909902130a12b8a62a99f7a59b0b81c2"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "scan-file",
+        "examples/llm_generated_patterns.py"
+      ],
+      "exit_code": 0,
+      "stdout": "redos-guard 0.1.0  scan-file  examples/llm_generated_patterns.py  (1 files, 9 constant patterns)\r\nnote: llm_generated_patterns.py: non-constant pattern argument cannot be analysed statically\r\nSAFE   llm_generated_patterns.py:10  '^[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.]+$'\r\nSAFE   llm_generated_patterns.py:11  '^\\\\d{4}-\\\\d{2}-\\\\d{2}$'\r\nSAFE   llm_generated_patterns.py:12  '^[a-z0-9]+(?:-[a-z0-9]+)*$'\r\nRISK   llm_generated_patterns.py:15  '^(\\\\w+)+$'\r\n    HIGH   RG-NESTED-QUANT      @6-7  nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\r\n        suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\r\nRISK   llm_generated_patterns.py:18  '^(a|aa)+$'\r\n    HIGH   RG-OVERLAP-ALT       @7-8  overlapping alternation branches \"'a'\" and \"'a''a'\" inside a repeated group (first characters overlap): ambiguous matching can backtrack exponentially\r\n        suggestion: Make the branches unambiguous (e.g. `(a|aa)` -> `a+` if equivalent, or order branches longest-first and use an atomic/possessive group), or replace the alternation with a character class if the branches are single characters.\r\nRISK   llm_generated_patterns.py:21  '^(\\\\w+)\\\\1+$'\r\n    HIGH   RG-BACKREF-REPEAT    @8-9  backreference \\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\r\n        suggestion: Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\r\nSAFE   llm_generated_patterns.py:25  '^\\\\d{4}-\\\\d{2}-\\\\d{2}$'\r\nRISK   llm_generated_patterns.py:29  '^(\\\\w+)+$'\r\n    HIGH   RG-NESTED-QUANT      @6-7  nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\r\n        suggestion: Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\r\nRISK   llm_generated_patterns.py:33  '^(\\\\w+)\\\\1+$'\r\n    HIGH   RG-BACKREF-REPEAT    @8-9  backreference \\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\r\n        suggestion: Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\r\nsummary: 9 pattern(s) analysed, 5 finding(s): 5 high, 0 medium, 0 low\r\n",
+      "stderr": "",
+      "stdout_sha256": "cf8f84a6aa6d9e0f2480f2785e657b678851eb7d1c0e54412885656cab7042f2"
+    },
+    {
+      "argv": [
+        "python",
+        "-m",
+        "redos_guard",
+        "scan-file",
+        "examples/llm_generated_patterns.py",
+        "--json",
+        "--fail-on",
+        "high"
+      ],
+      "exit_code": 1,
+      "stdout": "{\r\n  \"tool\": \"redos-guard\",\r\n  \"version\": \"0.1.0\",\r\n  \"path\": \"examples/llm_generated_patterns.py\",\r\n  \"entries\": [\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": null,\r\n      \"line\": 0,\r\n      \"column\": 0,\r\n      \"dynamic_skipped\": 1,\r\n      \"note\": \"non-constant pattern argument cannot be analysed statically\"\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^[\\\\w.+-]+@[\\\\w-]+\\\\.[\\\\w.]+$\",\r\n      \"line\": 10,\r\n      \"column\": 9,\r\n      \"call\": \"compile\",\r\n      \"findings\": [],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\r\n      \"line\": 11,\r\n      \"column\": 8,\r\n      \"call\": \"compile\",\r\n      \"findings\": [],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^[a-z0-9]+(?:-[a-z0-9]+)*$\",\r\n      \"line\": 12,\r\n      \"column\": 8,\r\n      \"call\": \"compile\",\r\n      \"findings\": [],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^(\\\\w+)+$\",\r\n      \"line\": 15,\r\n      \"column\": 12,\r\n      \"call\": \"compile\",\r\n      \"findings\": [\r\n        {\r\n          \"code\": \"RG-NESTED-QUANT\",\r\n          \"severity\": \"high\",\r\n          \"start\": 6,\r\n          \"end\": 7,\r\n          \"message\": \"nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\",\r\n          \"suggestion\": \"Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\",\r\n          \"data\": {\r\n            \"outer\": \"(\u2026)+\",\r\n            \"inner\": \"[0123456789AB]+\",\r\n            \"outer_unbounded\": true\r\n          }\r\n        }\r\n      ],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^(a|aa)+$\",\r\n      \"line\": 18,\r\n      \"column\": 13,\r\n      \"call\": \"compile\",\r\n      \"findings\": [\r\n        {\r\n          \"code\": \"RG-OVERLAP-ALT\",\r\n          \"severity\": \"high\",\r\n          \"start\": 7,\r\n          \"end\": 8,\r\n          \"message\": \"overlapping alternation branches \\\"'a'\\\" and \\\"'a''a'\\\" inside a repeated group (first characters overlap): ambiguous matching can backtrack exponentially\",\r\n          \"suggestion\": \"Make the branches unambiguous (e.g. `(a|aa)` -> `a+` if equivalent, or order branches longest-first and use an atomic/possessive group), or replace the alternation with a character class if the branches are single characters.\",\r\n          \"data\": {\r\n            \"branches\": [\r\n              \"'a'\",\r\n              \"'a''a'\"\r\n            ],\r\n            \"reason\": \"first characters overlap\",\r\n            \"outer_unbounded\": true\r\n          }\r\n        }\r\n      ],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^(\\\\w+)\\\\1+$\",\r\n      \"line\": 21,\r\n      \"column\": 18,\r\n      \"call\": \"compile\",\r\n      \"findings\": [\r\n        {\r\n          \"code\": \"RG-BACKREF-REPEAT\",\r\n          \"severity\": \"high\",\r\n          \"start\": 8,\r\n          \"end\": 9,\r\n          \"message\": \"backreference \\\\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\",\r\n          \"suggestion\": \"Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\",\r\n          \"data\": {\r\n            \"backref_group\": 1\r\n          }\r\n        }\r\n      ],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\",\r\n      \"line\": 25,\r\n      \"column\": 12,\r\n      \"call\": \"match\",\r\n      \"findings\": [],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^(\\\\w+)+$\",\r\n      \"line\": 29,\r\n      \"column\": 12,\r\n      \"call\": \"match\",\r\n      \"findings\": [\r\n        {\r\n          \"code\": \"RG-NESTED-QUANT\",\r\n          \"severity\": \"high\",\r\n          \"start\": 6,\r\n          \"end\": 7,\r\n          \"message\": \"nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\",\r\n          \"suggestion\": \"Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\",\r\n          \"data\": {\r\n            \"outer\": \"(\u2026)+\",\r\n            \"inner\": \"[0123456789AB]+\",\r\n            \"outer_unbounded\": true\r\n          }\r\n        }\r\n      ],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    },\r\n    {\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"pattern\": \"^(\\\\w+)\\\\1+$\",\r\n      \"line\": 33,\r\n      \"column\": 12,\r\n      \"call\": \"match\",\r\n      \"findings\": [\r\n        {\r\n          \"code\": \"RG-BACKREF-REPEAT\",\r\n          \"severity\": \"high\",\r\n          \"start\": 8,\r\n          \"end\": 9,\r\n          \"message\": \"backreference \\\\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\",\r\n          \"suggestion\": \"Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\",\r\n          \"data\": {\r\n            \"backref_group\": 1\r\n          }\r\n        }\r\n      ],\r\n      \"dynamic\": [],\r\n      \"error\": null\r\n    }\r\n  ],\r\n  \"findings\": [\r\n    {\r\n      \"code\": \"RG-NESTED-QUANT\",\r\n      \"severity\": \"high\",\r\n      \"start\": 6,\r\n      \"end\": 7,\r\n      \"message\": \"nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\",\r\n      \"suggestion\": \"Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\",\r\n      \"data\": {\r\n        \"outer\": \"(\u2026)+\",\r\n        \"inner\": \"[0123456789AB]+\",\r\n        \"outer_unbounded\": true\r\n      },\r\n      \"pattern\": \"^(\\\\w+)+$\",\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"line\": 15,\r\n      \"column\": 12\r\n    },\r\n    {\r\n      \"code\": \"RG-OVERLAP-ALT\",\r\n      \"severity\": \"high\",\r\n      \"start\": 7,\r\n      \"end\": 8,\r\n      \"message\": \"overlapping alternation branches \\\"'a'\\\" and \\\"'a''a'\\\" inside a repeated group (first characters overlap): ambiguous matching can backtrack exponentially\",\r\n      \"suggestion\": \"Make the branches unambiguous (e.g. `(a|aa)` -> `a+` if equivalent, or order branches longest-first and use an atomic/possessive group), or replace the alternation with a character class if the branches are single characters.\",\r\n      \"data\": {\r\n        \"branches\": [\r\n          \"'a'\",\r\n          \"'a''a'\"\r\n        ],\r\n        \"reason\": \"first characters overlap\",\r\n        \"outer_unbounded\": true\r\n      },\r\n      \"pattern\": \"^(a|aa)+$\",\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"line\": 18,\r\n      \"column\": 13\r\n    },\r\n    {\r\n      \"code\": \"RG-BACKREF-REPEAT\",\r\n      \"severity\": \"high\",\r\n      \"start\": 8,\r\n      \"end\": 9,\r\n      \"message\": \"backreference \\\\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\",\r\n      \"suggestion\": \"Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\",\r\n      \"data\": {\r\n        \"backref_group\": 1\r\n      },\r\n      \"pattern\": \"^(\\\\w+)\\\\1+$\",\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"line\": 21,\r\n      \"column\": 18\r\n    },\r\n    {\r\n      \"code\": \"RG-NESTED-QUANT\",\r\n      \"severity\": \"high\",\r\n      \"start\": 6,\r\n      \"end\": 7,\r\n      \"message\": \"nested quantifiers: (\u2026)+ repeats a group that already repeats [0123456789AB]+ \u2014 backtracking can be exponential\",\r\n      \"suggestion\": \"Avoid applying an unbounded quantifier to a group that itself repeats. Reduce to a single quantifier, bound the inner repetition ({1,100}), or use an atomic group / possessive quantifier where the engine supports it.\",\r\n      \"data\": {\r\n        \"outer\": \"(\u2026)+\",\r\n        \"inner\": \"[0123456789AB]+\",\r\n        \"outer_unbounded\": true\r\n      },\r\n      \"pattern\": \"^(\\\\w+)+$\",\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"line\": 29,\r\n      \"column\": 12\r\n    },\r\n    {\r\n      \"code\": \"RG-BACKREF-REPEAT\",\r\n      \"severity\": \"high\",\r\n      \"start\": 8,\r\n      \"end\": 9,\r\n      \"message\": \"backreference \\\\1 appears inside a repeated group: backtracking engines can exhibit exponential behaviour matching backreferences\",\r\n      \"suggestion\": \"Avoid repeating a group that contains a backreference, or bound the repetition and anchor the pattern.\",\r\n      \"data\": {\r\n        \"backref_group\": 1\r\n      },\r\n      \"pattern\": \"^(\\\\w+)\\\\1+$\",\r\n      \"source_file\": \"llm_generated_patterns.py\",\r\n      \"line\": 33,\r\n      \"column\": 12\r\n    }\r\n  ],\r\n  \"errors\": [],\r\n  \"summary\": {\r\n    \"total\": 5,\r\n    \"high\": 5,\r\n    \"medium\": 0,\r\n    \"low\": 0,\r\n    \"files\": 1,\r\n    \"patterns\": 9,\r\n    \"dynamic_skipped\": 1,\r\n    \"dynamic_timeouts\": 0\r\n  },\r\n  \"dynamic_enabled\": false,\r\n  \"caveat\": \"Static heuristics plus sampled dynamic timing; not a proof for all inputs.\"\r\n}\r\n",
+      "stderr": "",
+      "stdout_sha256": "d31437c1333a72ba148dba38b8195614a36131b5a1ece3e2e5df4768362f861b"
+    },
+    {
+      "argv": [
+        "python",
+        "-c",
+        "<scan-file verification one-liner>"
+      ],
+      "exit_code": 0,
+      "stdout": "patterns analysed: 9\r\nfindings: 5 high: 5\r\ndynamic skipped (non-constant): 1\r\nrisky patterns: ['llm_generated_patterns.py:15 ^(\\\\w+)+$', 'llm_generated_patterns.py:18 ^(a|aa)+$', 'llm_generated_patterns.py:21 ^(\\\\w+)\\\\1+$', 'llm_generated_patterns.py:29 ^(\\\\w+)+$', 'llm_generated_patterns.py:33 ^(\\\\w+)\\\\1+$']\r\n",
+      "stderr": "",
+      "stdout_sha256": "d401ab13c5060614fe8161da96e75a4fb300dad52845554d2cb46b11043f2d17"
+    }
+  ]
+}
