@@ -261,3 +261,7 @@ MIT — see [LICENSE](LICENSE). Prior art: Crosby & Wallach's ReDoS research,
 OWASP's ReDoS guidance, the Cloudflare July 2019 outage analysis, and
 CVE-2021-3807 as a supply-chain example. This project is independent and not
 affiliated with those authors or vendors.
+
+## 视频演示
+- B站：https://www.bilibili.com/video/BV1joy2zdEyc （regex-redos-guard 4:41 演示）
+- 项目主页/在线索引：https://qin-z-x.github.io/llm-security-toolkit/ （安全系列）或 https://github.com/Qin-Z-x
